@@ -103,6 +103,7 @@ class Main:
         self.cpm = 0
         self.maxcpm = 0
         self.lock = Lock()
+        self.session = requests.Session()
 
         config = self.ReadJson('[Data]/configs.json','r')
 
@@ -130,7 +131,7 @@ class Main:
 
             payload = json.dumps(message_to_send)
 
-            response = requests.post(self.webhook_url,data=payload,headers=headers,proxies=proxy)
+            response = self.session.post(self.webhook_url,data=payload,headers=headers,proxies=proxy)
 
             if response.text == "":
                 pass
@@ -147,7 +148,6 @@ class Main:
     def Bypass(self,link):
         try:
             useragent = self.GetRandomUserAgent()
-            session = requests.Session()
             start_link = link
 
             headers = {
@@ -170,7 +170,7 @@ class Main:
 
             link = f'https://publisher.linkvertise.com/api/v1/redirect/link/static/{id_name}'
             
-            response = session.get(link,headers=headers,proxies=proxy)
+            response = self.session.get(link,headers=headers,proxies=proxy)
         
             link_id = response.json()['data']['link']['id']
             link_id_salt = f'{link_id}{self.salt}'
@@ -178,21 +178,21 @@ class Main:
             link_id_salt_b64 = b64encode(link_id_salt.encode())
             
             link = 'https://publisher.linkvertise.com/api/v1/redirect/link/{0}/target?serial=eyJ0aW1lc3RhbXAiOjE2MTEzNTQyODUyNjMsInJhbmRvbSI6IjY1NDgzMDciLCJsaW5rX2lkIjoy{1}'.format(id_name,link_id_salt_b64.decode('utf-8'))
-            response = session.get(link,headers=headers,proxies=proxy)
+            response = self.session.get(link,headers=headers,proxies=proxy)
             self.maxcpm += 1
 
             if '"success":true,"' in response.text:
                 valid_link = response.json()['data']['target'].replace('\\','')
                 self.hits += 1
                 self.PrintText(Fore.WHITE,Fore.GREEN,'HIT',valid_link)
-                with open('[Data]/[Results]/bypassed_links.txt','a',encoding='utf8') as f:
+                with open('[Data]/[Results]/[BYPASS]/hits.txt','a',encoding='utf8') as f:
                     f.write(f'{valid_link}\n')
                 if self.webhook_enable == 1:
                     self.SendWebhook('Linkvertise Bypass',valid_link,'https://cdn.discordapp.com/attachments/776819723731206164/796935218166497352/onemanbuilds_new_logo_final.png','https://cdn1.iconfinder.com/data/icons/essenstial-ultimate-ui/64/hashtag-512.png',proxy,useragent)
             elif 'Es ist ein technischer Fehler aufgetreten.' in response.text:
                 self.bads += 1
                 self.PrintText(Fore.WHITE,Fore.RED,'BAD',start_link)
-                with open('[Data]/[Results]/bads.txt','a',encoding='utf8') as f:
+                with open('[Data]/[Results]/[BYPASS]/bads.txt','a',encoding='utf8') as f:
                     f.write(f'{start_link}\n')
             else:
                 self.retries += 1
