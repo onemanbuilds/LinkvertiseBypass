@@ -185,14 +185,14 @@ class Main:
                 valid_link = response.json()['data']['target'].replace('\\','')
                 self.hits += 1
                 self.PrintText(Fore.WHITE,Fore.GREEN,'HIT',valid_link)
-                with open('[Data]/[Results]/[BYPASS]/hits.txt','a',encoding='utf8') as f:
+                with open('[Data]/[Results]/hits.txt','a',encoding='utf8') as f:
                     f.write(f'{valid_link}\n')
                 if self.webhook_enable == 1:
                     self.SendWebhook('Linkvertise Bypass',valid_link,'https://cdn.discordapp.com/attachments/776819723731206164/796935218166497352/onemanbuilds_new_logo_final.png','https://cdn1.iconfinder.com/data/icons/essenstial-ultimate-ui/64/hashtag-512.png',proxy,useragent)
             elif 'Es ist ein technischer Fehler aufgetreten.' in response.text:
                 self.bads += 1
                 self.PrintText(Fore.WHITE,Fore.RED,'BAD',start_link)
-                with open('[Data]/[Results]/[BYPASS]/bads.txt','a',encoding='utf8') as f:
+                with open('[Data]/[Results]/bads.txt','a',encoding='utf8') as f:
                     f.write(f'{start_link}\n')
             else:
                 self.retries += 1
