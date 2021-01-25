@@ -171,9 +171,15 @@ class Main:
             api_link = f'https://publisher.linkvertise.com/api/v1/redirect/link/static/{id_name}'
             
             response = self.session.get(api_link,headers=headers,proxies=proxy)
+            
             self.maxcpm += 1
 
-            if '"success":true,"' in response.text:
+            if 'Es ist ein technischer Fehler aufgetreten.' in response.text or '<title>Linkvertise - Earn Money with Links | Monetization done right</title>' in response.text:
+                self.bads += 1
+                self.PrintText(Fore.WHITE,Fore.RED,'BAD',start_link)
+                with open('[Data]/[Results]/bads.txt','a',encoding='utf8') as f:
+                    f.write(f'{start_link}\n')
+            elif '"success":true,"' in response.text:
                 link_id = response.json()['data']['link']['id']
                 link_id_salt = f'{link_id}{self.salt}'
                 link_id_salt = link_id_salt[1:len(link_id_salt)]
@@ -189,11 +195,6 @@ class Main:
                     f.write(f'{valid_link}\n')
                 if self.webhook_enable == 1:
                     self.SendWebhook('Linkvertise Bypass',valid_link,'https://cdn.discordapp.com/attachments/776819723731206164/796935218166497352/onemanbuilds_new_logo_final.png','https://ps.w.org/linkvertise-script-api/assets/icon-256x256.png?rev=2080593',proxy,useragent)
-            elif 'Es ist ein technischer Fehler aufgetreten.' in response.text or '<title>Linkvertise - Earn Money with Links | Monetization done right</title>' in response.text:
-                self.bads += 1
-                self.PrintText(Fore.WHITE,Fore.RED,'BAD',start_link)
-                with open('[Data]/[Results]/bads.txt','a',encoding='utf8') as f:
-                    f.write(f'{start_link}\n')
             else:
                 self.retries += 1
                 self.Bypass(link)
