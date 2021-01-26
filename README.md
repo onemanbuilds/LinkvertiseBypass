@@ -16,8 +16,8 @@ pip3 install -r requirements.txt
  webhook_url (You have to enter your webhook url here).
 
 # Legal
- This was merely a speedrun to demonstrate how account checkers work.<br/>
- This is illegal if you use this without the consent of the owners (in this case, the Spotify team).<br/>
+ This was merely a speedrun to demonstrate how linkvertise bypass tools work.<br/>
+ This is illegal if you use this without the consent of the owners (in this case, the Linkvertise team).<br/>
  The software designed to perform website security testing.<br/>
  The author is not responsible for any illegal use of these programs.<br/>
  I am not accountable for anything you get into.<br/>
